@@ -54,8 +54,8 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
         setTimeout(() => setTileAnim(null), 500)
     }
 
-    function handleEnd(reason) {
-        onEnd({ reason, earned, totalPossible, found: found.length, allWords: words })
+    function handleEnd(reason, overrides = {}) {
+        onEnd({ reason, earned: overrides.earned ?? earned, totalPossible, found: overrides.found ?? foundRef.current.length, allWords: words })
     }
 
     function showFeedback(msg, type) {
@@ -84,11 +84,9 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
         if (!canFormWord(word, letters)) {
             triggerTileAnim('shake')
             showFeedback('Each tile can only be used once!', 'bad')
-            setTrials(t => {
-                const next = t - 1
-                if (next <= 0) handleEnd('no-trials')
-                return next
-            })
+            const next = trialsRef.current - 1
+            setTrials(next)
+            if (next <= 0) handleEnd('no-trials')
             return
         }
 
@@ -114,11 +112,9 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
         } else {
             triggerTileAnim('shake')
             showFeedback('Not a valid word', 'bad')
-            setTrials(t => {
-                const next = t - 1
-                if (next <= 0) handleEnd('no-trials')
-            return next
-            })
+            const next = trialsRef.current - 1
+            setTrials(next)
+            if (next <= 0) handleEnd('no-trials')
         }
     }
 
