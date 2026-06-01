@@ -1,4 +1,4 @@
-import WORDS from './WordList.js';
+import WORDS from './wordList.js';
 
 export function canFormWord(word, letters) {
     const available = {};
