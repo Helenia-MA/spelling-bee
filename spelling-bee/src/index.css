@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: #faf9f6;
+  color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+}
+
+/* shared */
+h1, h2 { font-family: 'Fraunces', serif; font-weight: 700; }
+h1 { font-size: 36px; }
+h1 span, .game-title span { color: #BA7517; }
+h2 { font-size: 28px; }
+
+button {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 0.5px solid #ccc;
+  background: white;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+button:hover { background: #f5f5f5; }
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+input {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 0.5px solid #ccc;
+  outline: none;
+  background: white;
+}
+input:focus { border-color: #BA7517; }
+
+/* start screen */
+.start-screen { text-align: center; padding: 3rem 1rem; }
+.bee-emoji { font-size: 48px; margin-bottom: 0.5rem; }
+.start-screen p { color: #666; font-size: 14px; line-height: 1.7; margin: 1rem 0 1.5rem; }
+.name-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.name-row input { width: 200px; }
+
+/* game screen */
+.game-screen { position: relative; }
+
+.game-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+.game-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.player-label { font-size: 12px; color: #888; margin-top: 3px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.timer { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; }
+.timer.warn { color: #A32D2D; }
+.header-btns { display: flex; gap: 6px; }
+.header-btns button { font-size: 12px; padding: 5px 10px; color: #666; }
+.header-btns button.danger:hover { color: #A32D2D; border-color: #f09595; }
+
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+.stat { background: #f5f5f0; border-radius: 8px; padding: 10px 12px; text-align: center; }
+.stat-val { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; }
+.stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+
+.progress-wrap { margin-bottom: 1.25rem; }
+.progress-bar { height: 4px; background: #e8e8e0; border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: #1D9E75; border-radius: 99px; transition: width 0.4s ease; }
+.progress-label { font-size: 11px; color: #888; margin-top: 4px; }
+
+.letters-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.letter-tile {
+  width: 54px; height: 54px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600;
+  cursor: pointer; border: 0.5px solid #ddd; background: white;
+  transition: transform 0.1s, background 0.15s;
+  user-select: none;
+}
+.letter-tile:hover { background: #f5f5f0; transform: translateY(-2px); }
+.letter-tile:active { transform: scale(0.93); }
+.letter-tile.center { background: #FAEEDA; border-color: #EF9F27; color: #633806; }
+
+.guess-display {
+  min-height: 54px; background: #f5f5f0;
+  border: 0.5px solid #ddd; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600;
+  letter-spacing: 6px; text-transform: uppercase;
+  margin-bottom: 10px; transition: background 0.2s, border-color 0.2s;
+}
+.guess-display.flash-good { background: #E1F5EE; border-color: #5DCAA5; }
+.guess-display.flash-bad { background: #FCEBEB; border-color: #F09595; }
+
+.feedback { text-align: center; font-size: 13px; min-height: 20px; margin-bottom: 10px; color: #888; }
+.feedback.good { color: #0F6E56; }
+.feedback.bad { color: #993C1D; }
+.feedback.hint { color: #534AB7; }
+
+.btn-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.btn-row button { flex: 1; padding: 10px; }
+.btn-submit { background: #FAEEDA !important; border-color: #EF9F27 !important; color: #633806 !important; }
+.btn-submit:hover { background: #FAC775 !important; }
+
+.hint-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; }
+.hint-btn { background: #EEEDFE; border-color: #AFA9EC; color: #3C3489; }
+.hint-btn:hover { background: #CECBF6; }
+.hint-label { font-size: 12px; color: #888; }
+
+/* found words */
+.found-section { border-top: 0.5px solid #e0e0d8; padding-top: 1rem; }
+.found-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.found-title { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.found-max { font-size: 12px; color: #888; }
+.found-words { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
+.found-word {
+  background: #E1F5EE; color: #085041;
+  font-size: 12px; padding: 4px 10px;
+  border-radius: 8px; border: 0.5px solid #9FE1CB;
+  animation: popIn 0.2s ease;
+}
+.found-pts { opacity: 0.6; }
+@keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* end screen */
+.end-screen { text-align: center; padding: 3rem 1rem; }
+.end-screen p { color: #666; font-size: 14px; margin: 0.5rem 0 1rem; }
+.final-score { font-family: 'Fraunces', serif; font-size: 56px; font-weight: 700; color: #BA7517; margin: 1rem 0 0.25rem; }
+.final-label { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+.end-btns { display: flex; gap: 8px; justify-content: center; }
+
+/* confirm overlay */
+.confirm-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.1);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+}
+.confirm-box {
+  background: white; border: 0.5px solid #ddd;
+  border-radius: 12px; padding: 1.5rem;
+  text-align: center; max-width: 260px;
+}
+.confirm-box p { font-size: 14px; color: #333; margin-bottom: 1rem; }
+.confirm-btns { display: flex; gap: 8px; justify-content: center; }
+.confirm-yes { background: #FCEBEB !important; border-color: #F09595 !important; color: #791F1F !important; }
