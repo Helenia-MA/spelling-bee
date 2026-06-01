@@ -32,17 +32,14 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
     useEffect(() => { trialsRef.current = trials }, [trials])
     useEffect(() => { usedHintsRef.current = usedHints }, [usedHints])
 
-    // timer
+    // timer; + deducting 0.5 pts for every 2 minutes spent 
     useEffect(() => {
         const interval = setInterval(() => {
         setTimerSecs(t => {
-            if (t <= 1) { clearInterval(interval); handleEnd('timeout'); return 0; }
-            return t - 1
-        })
-        setPenalty(p => {
-            // deduct 0.5 pts every 2 minutes
-            if (timerSecs > 0 && timerSecs % 120 === 0 && timerSecs < 300) return p + 0.5
-            return p
+            const next = t - 1
+            if (next <= 0) { clearInterval(interval); handleEnd('timeout'); return 0; }
+            if (next % 120 === 0 && next > 0) setPenalty(p => p + 0.5)
+            return next
         })
         }, 1000)
         return () => clearInterval(interval)
