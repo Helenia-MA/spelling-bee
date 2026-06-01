@@ -97,11 +97,20 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
         if (remainingRef.current.has(word)) {
             triggerTileAnim('bounce')
             const pts = word.length
-            setPoints(p => p + pts)
+            const newPoints = points + pts
+            const newFound = [...foundRef.current, word]
+            const newEarned = Math.max(0, newPoints - Math.floor(penalty))
+
+            setPoints(newPoints)
             setRemaining(r => { const next = new Set(r); next.delete(word); return next })
-            setFound(f => [...f, word])
+            setFound(newFound)
+            triggerTileAnim('bounce')
             showFeedback(`+${pts} point${pts > 1 ? 's' : ''} — nice!`, 'good')
-            if (remainingRef.current.size === 1) handleEnd('all-found')
+
+            if (remainingRef.current.size === 1) {
+                onEnd({ reason: 'all-found', earned: newEarned, totalPossible, found: newFound.length, allWords: words })
+
+            }
         } else {
             triggerTileAnim('shake')
             showFeedback('Not a valid word', 'bad')
