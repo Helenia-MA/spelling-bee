@@ -24,6 +24,9 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
     const trialsRef = useRef(trials)
     const usedHintsRef = useRef(usedHints)
 
+    const [tileAnim, setTileAnim] = useState(null) // 'bounce' | 'shake' | null
+
+
     useEffect(() => { remainingRef.current = remaining }, [remaining])
     useEffect(() => { foundRef.current = found }, [found])
     useEffect(() => { trialsRef.current = trials }, [trials])
@@ -46,6 +49,10 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
     }, [])
 
 
+    function triggerTileAnim(type) {
+        setTileAnim(type)
+        setTimeout(() => setTileAnim(null), 500)
+    }
 
     function handleEnd(reason) {
         onEnd({ reason, earned, totalPossible, found: found.length, allWords: words })
@@ -75,25 +82,28 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
         if (word.length < 2) { showFeedback('Too short!', 'bad'); return }
 
         if (!canFormWord(word, letters)) {
-        showFeedback('Each tile can only be used once!', 'bad')
-        setTrials(t => {
-            const next = t - 1
-            if (next <= 0) handleEnd('no-trials')
-            return next
-        })
-        return
+            triggerTileAnim('shake')
+            showFeedback('Each tile can only be used once!', 'bad')
+            setTrials(t => {
+                const next = t - 1
+                if (next <= 0) handleEnd('no-trials')
+                return next
+            })
+            return
         }
 
-        if (found.includes(word)) { showFeedback('Already found!', 'bad'); return }
+        if (foundRef.current.includes(word)) { showFeedback('Already found!', 'bad'); return }
 
-        if (remaining.has(word)) {
-        const pts = word.length
-        setPoints(p => p + pts)
-        setRemaining(r => { const next = new Set(r); next.delete(word); return next })
-        setFound(f => [...f, word])
-        showFeedback(`+${pts} point${pts > 1 ? 's' : ''} — nice!`, 'good')
-        if (remaining.size === 1) handleEnd('all-found')
+        if (remainingRef.current.has(word)) {
+            triggerTileAnim('bounce')
+            const pts = word.length
+            setPoints(p => p + pts)
+            setRemaining(r => { const next = new Set(r); next.delete(word); return next })
+            setFound(f => [...f, word])
+            showFeedback(`+${pts} point${pts > 1 ? 's' : ''} — nice!`, 'good')
+            if (remainingRef.current.size === 1) handleEnd('all-found')
         } else {
+            triggerTileAnim('shake')
             showFeedback('Not a valid word', 'bad')
             setTrials(t => {
                 const next = t - 1
@@ -182,7 +192,7 @@ export default function GameScreen({ name, letters, centerIdx, words, onEnd, onR
 
         <div className="letters-row">
             {letters.split('').map((l, i) => (
-            <LetterTile key={i} letter={l} isCenter={i === centerIdx} onClick={addLetter} />
+            <LetterTile key={i} letter={l} isCenter={i === centerIdx} onClick={addLetter} anim={tileAnim} />
             ))}
         </div>
         <div className="tiles-note">each tile can only be used once!</div>
